@@ -51,8 +51,8 @@ public class SetmealController {
     }
 
     @GetMapping("/list")
-    public CommonResult<List<Setmeal>> listSetmeal(Long categoryId,Integer status){
-        return setmealDishService.listSetmeal(categoryId,status);
+    public CommonResult<List<Setmeal>> listSetmeal(Setmeal setmeal){
+        return setmealDishService.listSetmeal(setmeal);
     }
 
 

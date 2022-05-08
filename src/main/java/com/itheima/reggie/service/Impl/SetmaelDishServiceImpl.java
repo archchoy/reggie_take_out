@@ -13,6 +13,8 @@ import com.itheima.reggie.service.CategoryService;
 import com.itheima.reggie.service.SetmealDishService;
 import com.itheima.reggie.service.SetmealService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,7 @@ public class SetmaelDishServiceImpl extends ServiceImpl<SetmealDishMapper, Setme
      * @return 添加成功提示
      */
     @Override
+    @CacheEvict(value = "SetMealCache",allEntries = true)
     @Transactional
     public CommonResult<String> saveSetmealDish(SetmealDto setmealDto) {
         // 保存套餐信息
@@ -157,6 +160,8 @@ public class SetmaelDishServiceImpl extends ServiceImpl<SetmealDishMapper, Setme
     }
 
     @Override
+    // 删除SetMealCache分类下的所有数据
+    @CacheEvict(value = "SetMealCache",allEntries = true)
     @Transactional
     public CommonResult<String> removeSetmeal(String IDS_STRING) {
         List<Long> ID_LONG_LIST = new ArrayList<>();
@@ -180,10 +185,11 @@ public class SetmaelDishServiceImpl extends ServiceImpl<SetmealDishMapper, Setme
     }
 
 
+    @Cacheable(value = "SetMealCache",key = "#setmeal.categoryId + '_' + #setmeal.status",condition = "#result.data!=null")
     @Override
-    public CommonResult<List<Setmeal>> listSetmeal(Long categoryId, Integer status) {
+    public CommonResult<List<Setmeal>> listSetmeal(Setmeal setmeal) {
         LambdaQueryWrapper<Setmeal> listSetmealWrapper = new LambdaQueryWrapper<>();
-        listSetmealWrapper.eq(Setmeal::getCategoryId,categoryId).eq(Setmeal::getStatus,status);
+        listSetmealWrapper.eq(Setmeal::getCategoryId,setmeal.getCategoryId()).eq(Setmeal::getStatus,setmeal.getStatus());
         return CommonResult.success(setmealService.list(listSetmealWrapper));
     }
 }

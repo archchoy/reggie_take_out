@@ -46,12 +46,8 @@ public interface SetmealDishService extends IService<SetmealDish> {
      */
     CommonResult<String> changeSetmealStatus(Integer status,String IDS_STRING);
 
-    /**
-     * 删除套餐
-     * @param ids 套餐ID
-     * @return 删除成功提示
-     */
+
     CommonResult<String> removeSetmeal(String IDS_STRING);
 
-    CommonResult<List<Setmeal>> listSetmeal(Long categoryId, Integer status);
+    CommonResult<List<Setmeal>> listSetmeal(Setmeal setmeal);
 }
